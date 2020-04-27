@@ -1,0 +1,21 @@
+
+На компе
+export ROS_MASTER_URI=http://10.0.0.50:11311
+rosrun rviz rviz
+rostopic list
+ rostopic pub /cmd_vel geometry_msgs/Twist "linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0" 
+
+
+Raspberry
+
+roslaunch turtlebro uvc_camera2.launch 
+roslaunch turtlebro uvc_camera.launch 
+
+
