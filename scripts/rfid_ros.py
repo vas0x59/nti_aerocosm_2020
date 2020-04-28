@@ -27,7 +27,7 @@ import signal
 import rospy 
 from std_msgs.msg import String, Int16MultiArray, MultiArrayDimension, MultiArrayLayout
 rospy.init_node("rfid")
-publs = rospy.Publisher("/rfid_bytes", Int16MultiArray, queue_size=10)
+publs = rospy.Publisher("/arduino/rfid_bytes", Int16MultiArray, queue_size=10)
 continue_reading = True
 
 # Capture SIGINT for cleanup when the script is aborted
