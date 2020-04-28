@@ -133,6 +133,9 @@ void loop()
     else if ((digitalRead(back_end_switch) == 1 ) && (digitalRead(front_end_switch) == 1 )){
         stepper.setSpeed(slider_speed);
     }
+    else if (slider_speed == 0){
+        stepper.setSpeed(slider_speed);
+    }
 
     servos.spinOnce();
     stepper.runSpeed();
