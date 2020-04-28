@@ -34,10 +34,13 @@ yaw_val = 0
 
 r1_val = 0
 r2_val = 0
+MAXMOTOR=50
 motor_speed = 0
 
 SPEED = 0.2
 SPEED_A = 0.5
+
+revers_btn = 1
 
 for event in device.read_loop():
     if event.type == evdev.ecodes.EV_KEY:
@@ -45,6 +48,16 @@ for event in device.read_loop():
         if event.code == evdev.ecodes.BTN_BASE2:
             if event.value == 1:
                 exit()
+        elif event.code == evdev.ecodes.BTN_TOP:
+            if event.value == 1:
+                revers_btn = -1
+            else:
+                revers_btn = 1
+        elif event.code == evdev.ecodes.BTN_THUMB:
+            if event.value == 1:
+                motor_speed = MAXMOTOR
+            else:
+                motor_speed = 0
     if event.type == evdev.ecodes.EV_ABS:
         # print(evdev.categorize(event))
         # cat = evdev.categorize(event)
