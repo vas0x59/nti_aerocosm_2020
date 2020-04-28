@@ -8,7 +8,7 @@
   <license>TODO</license>
   <!-- <author email="cola@cactus.ru">Cola</author> -->
   <maintainer email="cola@cactus.ru">vas0x59</maintainer>
-  <!-- <buildtool_depend>catkin</buildtool_depend> -->
+  <buildtool_depend>catkin</buildtool_depend>
   <!-- <exec_depend>amcl</exec_depend> -->
   <!-- <exec_depend>map_server</exec_depend> -->
   <!-- <exec_depend>move_base</exec_depend> -->
