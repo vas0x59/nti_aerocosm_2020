@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>nti_aerocosm_2020</name>
+  <version>0.0.1</version>
+  <description>
+    Solution
+  </description>
+  <license>TODO</license>
+  <!-- <author email="cola@cactus.ru">Cola</author> -->
+  <!-- <maintainer email="cola@cactus.ru">Cola</maintainer> -->
+  <!-- <buildtool_depend>catkin</buildtool_depend> -->
+  <!-- <exec_depend>amcl</exec_depend> -->
+  <!-- <exec_depend>map_server</exec_depend> -->
+  <!-- <exec_depend>move_base</exec_depend> -->
+  <!-- <exec_depend>gmapping</exec_depend> -->
+</package>

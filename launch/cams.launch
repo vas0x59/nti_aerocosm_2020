@@ -1,0 +1,6 @@
+<launch>
+    <include file="$(find nti_aerocosm_2020)/launch/uvc_camera.launch" />
+    <include file="$(find nti_aerocosm_2020)/launch/uvc_camera2.launch" />
+    <!-- <include file="$(find autonet_r1)/launch/camera1.launch" /> -->
+    
+</launch>
