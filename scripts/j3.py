@@ -72,7 +72,7 @@ for event in device.read_loop():
         cmd_vel.publish(tw)
         servo1.publish(int((-r1_val+1) * 90))
         servo2.publish(int((r2_val+1) * 90))
-        slider.publish(float(thru_val))
+        slider.publish(float(yaw_val))
         # if  == evdev.ecodes.ABS_Y:
         #     print("dd")
         #     print()
