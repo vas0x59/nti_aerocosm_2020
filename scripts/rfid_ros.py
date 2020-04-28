@@ -25,9 +25,9 @@ import RPi.GPIO as GPIO
 from MFRC522_python_nogit import MFRC522
 import signal
 import rospy 
-from std_msgs.msg import String
+from std_msgs.msg import String, ByteMultiArray
 rospy.init_node("rfid")
-publs = rospy.Publisher("/rfid_str", String, queue_size=10)
+publs = rospy.Publisher("/rfid_bytes", ByteMultiArray, queue_size=10)
 continue_reading = True
 
 # Capture SIGINT for cleanup when the script is aborted
@@ -77,7 +77,7 @@ while continue_reading:
 
         # Check if authenticated
         if status == MIFAREReader.MI_OK:
-            blockdata = str(MIFAREReader.MFRC522_Read(61))
+            blockdata = MIFAREReader.MFRC522_Read(61)
             publs.publish(blockdata)
             print(blockdata)
             MIFAREReader.MFRC522_StopCrypto1()
