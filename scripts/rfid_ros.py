@@ -77,8 +77,10 @@ while continue_reading:
 
         # Check if authenticated
         if status == MIFAREReader.MI_OK:
+            mmm = ByteMultiArray()
             blockdata = MIFAREReader.MFRC522_Read(61)
-            publs.publish(blockdata)
+            mmm.data = blockdata
+            publs.publish(mmm)
             print(blockdata)
             MIFAREReader.MFRC522_StopCrypto1()
         else:
