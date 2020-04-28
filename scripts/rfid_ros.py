@@ -25,7 +25,7 @@ import RPi.GPIO as GPIO
 from MFRC522_python_nogit import MFRC522
 import signal
 import rospy 
-from std_msgs.msg import String, ByteMultiArray, MultiArrayLayout
+from std_msgs.msg import String, ByteMultiArray, MultiArrayDimension, MultiArrayLayout
 rospy.init_node("rfid")
 publs = rospy.Publisher("/rfid_bytes", ByteMultiArray, queue_size=10)
 continue_reading = True
@@ -79,7 +79,7 @@ while continue_reading:
         if status == MIFAREReader.MI_OK:
             mmm = ByteMultiArray()
             blockdata = MIFAREReader.MFRC522_Read(61)
-            mmm.layout = MultiArrayLayout(dim=[len(blockdata)])
+            mmm.layout = MultiArrayLayout(dim=[MultiArrayDimension(size=blockdata)])
             mmm.data = blockdata
             publs.publish(mmm)
             print(blockdata)
