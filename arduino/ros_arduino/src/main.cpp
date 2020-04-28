@@ -24,6 +24,9 @@ Servo servo45; //small
 #define motorPin3 12 // IN3 на 1-м драйвере ULN2003
 #define motorPin4 13 // IN4 на 1-м драйвере ULN2003
 
+
+//_____________________________HC-12__________________
+#define HC12SetPin 40
 AccelStepper stepper(HALFSTEP, motorPin1, motorPin3, motorPin2, motorPin4);
 
 class NewHardware : public ArduinoHardware
@@ -97,6 +100,26 @@ ros::Subscriber<std_msgs::Float32> subs4("/arduino/slider", &motorline);    // s
 
 void setup()
 {
+    Serial3.begin(9600);
+    digitalWrite(HC12SetPin, LOW);
+    delay(500);
+    //HC-12
+    
+    Serial3.println("AT");
+    delay(50);
+    Serial3.println("AT+V");
+    delay(50);
+    Serial3.println("AT+DEFAULT");
+    delay(50);
+    Serial3.println("AT+P8");
+    delay(50);
+    Serial3.println("AT+C005");
+    // delay(10);
+    delay(500);
+    digitalWrite(HC12SetPin, HIGH);
+    delay(10);
+
+
     pinMode(Sila, OUTPUT);
     pinMode(Naprav, OUTPUT);
     digitalWrite(Naprav, HIGH);
