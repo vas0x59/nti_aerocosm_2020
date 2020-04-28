@@ -22,7 +22,7 @@
 #
 
 import RPi.GPIO as GPIO
-from MFRC522_python import MFRC522
+from MFRC522_python_nogit import MFRC522
 import signal
 import rospy 
 from std_msgs.msg import String
