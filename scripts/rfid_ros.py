@@ -88,7 +88,7 @@ while continue_reading:
             mmm.layout = MultiArrayLayout(dim=[MultiArrayDimension(size=len(blockdata))])
             mmm.data = bbb
             publs.publish(mmm)
-            time.sleep(0.01)
+            time.sleep(0.8)
             print(blockdata)
             MIFAREReader.MFRC522_StopCrypto1()
         else:
