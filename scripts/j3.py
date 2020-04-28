@@ -14,7 +14,7 @@ cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
 
 servo1 = rospy.Publisher("/arduino/servo1", Int32, queue_size=10)
 servo2 = rospy.Publisher("/arduino/servo2", Int32, queue_size=10)
-slider = rospy.Publisher("/arduino/slider", Int32, queue_size=10)
+slider = rospy.Publisher("/arduino/slider", Float32, queue_size=10)
 motor = rospy.Publisher("/arduino/motor1", Int32, queue_size=10)
 
 
@@ -30,6 +30,11 @@ device = evdev.InputDevice(dddd)
 forward_val = 0
 right_val = 0
 thru_val = 0
+yaw_val = 0
+
+r1_val = 0
+r2_val = 0
+motor_speed = 0
 
 SPEED = 0.2
 SPEED_A = 0.5
@@ -50,14 +55,24 @@ for event in device.read_loop():
             right_val = event.value/90.5
         elif event.code == evdev.ecodes.ABS_Z:
             thru_val = event.value/90.5
-        print("f", forward_val, "r", right_val)
+        elif event.code == evdev.ecodes.ABS_RX:
+            yaw_val  = event.value/90.5
+        elif event.code == evdev.ecodes.ABS_RX:
+            yaw_val  = event.value/90.5
+        elif event.code == evdev.ecodes.ABS_RY:
+            r1_val  = event.value/90.5
+        elif event.code == evdev.ecodes.ABS_RZ:
+            r1_val  = event.value/90.5
+        print("f", forward_val, "r", right_val, "T", thru_val, "y", yaw_val, "1", r1_val, "2", r2_val)
         tw = Twist()
         # rospy.sleep(2)
         # print("A")
         tw.linear.x = forward_val*SPEED
         tw.angular.z = right_val*SPEED_A
         cmd_vel.publish(tw)
-        servo1.publish((thru_val+1) * 90)
+        servo1.publish(int((-r1_val+1) * 90))
+        servo2.publish(int((r2_val+1) * 90))
+        slider.publish(float(thru_val))
         # if  == evdev.ecodes.ABS_Y:
         #     print("dd")
         #     print()

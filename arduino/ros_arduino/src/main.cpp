@@ -2,6 +2,7 @@
 #include <Servo.h>
 #include <ros.h>
 #include <std_msgs/Int32.h>
+#include <std_msgs/Float32.h>
 #include <AccelStepper.h>
 
 //___________________________dvig Open_____________
@@ -61,34 +62,38 @@ void motorRotation1(const std_msgs::Int32 &cmd_msg)
     }
 }
 
-void motorline(const std_msgs::Int32 &cmd_msg2)
+int slider_speed = 0;
+int slider_maxspeed = 50;
+
+void motorline(const std_msgs::Float32 &cmd_msg2)
 { // stepper a need testing
-    if (cmd_msg2.data == 0)
-    {
-        stepper.setSpeed(-50);
-        while (digitalRead(back_end_switch) == 1)
-        {
-            stepper.runSpeed();
-            servos.spinOnce();
-        }
-        //    stepper.stop();
-    }
-    else
-    {
-        stepper.setSpeed(50);
-        while (digitalRead(back_end_switch) == 1)
-        {
-            stepper.runSpeed();
-            servos.spinOnce();
-        }
-        //    stepper.stop();
-    }
+    slider_speed = slider_maxspeed * cmd_msg2.data;
+    // if (cmd_msg2.data == 0)
+    // {
+    //     stepper.setSpeed(-50);
+    //     while (digitalRead(back_end_switch) == 1)
+    //     {
+    //         stepper.runSpeed();
+    //         servos.spinOnce();
+    //     }
+    //     //    stepper.stop();
+    // }
+    // else
+    // {
+    //     stepper.setSpeed(50);
+    //     while (digitalRead(back_end_switch) == 1)
+    //     {
+    //         stepper.runSpeed();
+    //         servos.spinOnce();
+    //     }
+    //     //    stepper.stop();
+    // }
 }
 
 ros::Subscriber<std_msgs::Int32> subs1("/arduino/servo1", &s1);             //servo big
 ros::Subscriber<std_msgs::Int32> subs2("/arduino/servo2", &s2);             // sevo small
 ros::Subscriber<std_msgs::Int32> subs3("/arduino/motor1", &motorRotation1); // moto open
-ros::Subscriber<std_msgs::Int32> subs4("/arduino/slider", &motorline);      // steper
+ros::Subscriber<std_msgs::Float32> subs4("/arduino/slider", &motorline);    // steper %
 
 void setup()
 {
@@ -101,16 +106,33 @@ void setup()
     servos.initNode();
     pinMode(front_end_switch, INPUT_PULLUP);
     pinMode(back_end_switch, INPUT_PULLUP);
-    stepper.setMaxSpeed(1000);
+    stepper.setMaxSpeed(500);
     stepper.setSpeed(50);
     servos.subscribe(subs1);
     servos.subscribe(subs2);
     servos.subscribe(subs3);
     servos.subscribe(subs4);
+    // init
+    stepper.setSpeed(-50);
+    while (digitalRead(back_end_switch) != 0)
+    {
+        stepper.runSpeed();
+    }
+    stepper.stop();
+    stepper.setSpeed(slider_speed);
 }
 
 void loop()
 {
+    if ((digitalRead(back_end_switch) == 0 ) && (slider_speed > 0)){
+        stepper.setSpeed(slider_speed);
+    }
+    if ((digitalRead(front_end_switch) == 0 ) && (slider_speed < 0)){
+        stepper.setSpeed(slider_speed);
+    }
+
     servos.spinOnce();
+    stepper.runSpeed();
     delay(1);
+    
 }
