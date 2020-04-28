@@ -179,10 +179,10 @@ delay(600);
 void loop() {
   
   nh.spinOnce();
-  int a = digitalRead(front_end_switch);
-  int b = digitalRead(back_end_switch);
-  echo1_m.publish(&a);
-  echo2_m.publish(&b);
+  echo1_m.data = digitalRead(front_end_switch);
+  echo2_m.data = digitalRead(back_end_switch);
+  echo1_pub.publish(&echo1_m);
+  echo2_pub.publish(&echo2_m);
   if (((digitalRead(back_end_switch) == 0) or (digitalRead(front_end_switch) == 0)) and (x == 0)) {
     x = 1;
     stepper.step(0);
