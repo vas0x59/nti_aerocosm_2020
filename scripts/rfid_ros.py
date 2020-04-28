@@ -79,6 +79,7 @@ while continue_reading:
         if status == MIFAREReader.MI_OK:
             mmm = ByteMultiArray()
             blockdata = MIFAREReader.MFRC522_Read(61)
+            mmm.layout = len(blockdata)
             mmm.data = blockdata
             publs.publish(mmm)
             print(blockdata)
