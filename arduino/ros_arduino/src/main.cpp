@@ -1,43 +1,27 @@
+
 #include <Arduino.h>
-#include <Servo.h>
+
 #include <ros.h>
-#include <std_msgs/Int32.h>
+
+#include <std_msgs/Bool.h>
 #include <std_msgs/Float32.h>
-#include <AccelStepper.h>
-
-//___________________________dvig Open_____________
-#define Sila 9
-#define Naprav 8
-
-//______________________________Kon________
-#define front_end_switch 7
-#define back_end_switch 6
-
-//___________________________servo________________
-Servo servo44; //big
-Servo servo45; //small
-
-//______________________________stepper_______________
-#define HALFSTEP 8
-#define motorPin1 10 // IN1 на 1-м драйвере ULN2003
-#define motorPin2 11 // IN2 на 1-м драйвере ULN2003
-#define motorPin3 12 // IN3 на 1-м драйвере ULN2003
-#define motorPin4 13 // IN4 на 1-м драйвере ULN2003
-
-
-//_____________________________HC-12__________________
-#define HC12SetPin 40
-AccelStepper stepper(HALFSTEP, motorPin1, motorPin3, motorPin2, motorPin4);
-
+#include <std_msgs/Header.h>
+#include <std_msgs/Int16.h>
+#include <std_msgs/Int32.h>
+#include <Servo.h>
 class NewHardware : public ArduinoHardware
 {
 public:
     NewHardware() : ArduinoHardware(&Serial1, 115200){};
 };
 
-std_msgs::Int32 cmd_msg;
+ros::NodeHandle_<NewHardware> nh;
 
-ros::NodeHandle servos; ///arduino/servo1    /arduino/servo2     Int32
+
+Servo servo44; //big
+Servo servo45; //small
+
+
 void s1(const std_msgs::Int32 &cmd_msg)
 { // servo big
     servo44.write(cmd_msg.data);
@@ -46,122 +30,22 @@ void s2(const std_msgs::Int32 &cmd_msg)
 { // sevo small
     servo45.write(cmd_msg.data);
 }
-void motorRotation1(const std_msgs::Int32 &cmd_msg)
-{ // moto-open
-    if (cmd_msg.data < 0)
-    { // open
-        analogWrite(Sila, abs(cmd_msg.data));
-        digitalWrite(Naprav, LOW);
-    }
-    else if (cmd_msg.data > 0)
-    { // closse
-        analogWrite(Sila, abs(cmd_msg.data));
-        digitalWrite(Naprav, HIGH);
-    }
-    else
-    { // stop
-        analogWrite(Sila, 255);
-        digitalWrite(Naprav, HIGH);
-    }
-}
-
-int slider_speed = 0;
-int slider_maxspeed = 50;
-
-void motorline(const std_msgs::Float32 &cmd_msg2)
-{ // stepper a need testing
-    slider_speed = slider_maxspeed * cmd_msg2.data;
-    // if (cmd_msg2.data == 0)
-    // {
-    //     stepper.setSpeed(-50);
-    //     while (digitalRead(back_end_switch) == 1)
-    //     {
-    //         stepper.runSpeed();
-    //         servos.spinOnce();
-    //     }
-    //     //    stepper.stop();
-    // }
-    // else
-    // {
-    //     stepper.setSpeed(50);
-    //     while (digitalRead(back_end_switch) == 1)
-    //     {
-    //         stepper.runSpeed();
-    //         servos.spinOnce();
-    //     }
-    //     //    stepper.stop();
-    // }
-}
-
 ros::Subscriber<std_msgs::Int32> subs1("/arduino/servo1", &s1);             //servo big
 ros::Subscriber<std_msgs::Int32> subs2("/arduino/servo2", &s2);             // sevo small
-ros::Subscriber<std_msgs::Int32> subs3("/arduino/motor1", &motorRotation1); // moto open
-ros::Subscriber<std_msgs::Float32> subs4("/arduino/slider", &motorline);    // steper %
 
 void setup()
 {
-    Serial3.begin(9600);
-    digitalWrite(HC12SetPin, LOW);
-    delay(500);
-    //HC-12
-    
-    Serial3.println("AT");
-    delay(50);
-    Serial3.println("AT+V");
-    delay(50);
-    Serial3.println("AT+DEFAULT");
-    delay(50);
-    Serial3.println("AT+P8");
-    delay(50);
-    Serial3.println("AT+C005");
-    // delay(10);
-    delay(500);
-    digitalWrite(HC12SetPin, HIGH);
-    delay(10);
-
-
-    pinMode(Sila, OUTPUT);
-    pinMode(Naprav, OUTPUT);
-    digitalWrite(Naprav, HIGH);
-    analogWrite(Sila, 255);
     servo44.attach(44);
     servo45.attach(45);
-    servos.initNode();
-    pinMode(front_end_switch, INPUT_PULLUP);
-    pinMode(back_end_switch, INPUT_PULLUP);
-    stepper.setMaxSpeed(500);
-    stepper.setSpeed(50);
-    servos.subscribe(subs1);
-    servos.subscribe(subs2);
-    servos.subscribe(subs3);
-    servos.subscribe(subs4);
-    // init
-    stepper.setSpeed(-50);
-    while (digitalRead(back_end_switch) != 0)
-    {
-        stepper.runSpeed();
-    }
-    stepper.stop();
-    stepper.setSpeed(slider_speed);
+    nh.initNode();
+    nh.subscribe(subs1);
+    nh.subscribe(subs2);
+    Serial1.begin(115200);
 }
 
 void loop()
 {
-    if ((digitalRead(back_end_switch) == 0 ) && (slider_speed > 0)){
-        stepper.setSpeed(slider_speed);
-    }
-    else if ((digitalRead(front_end_switch) == 0 ) && (slider_speed < 0)){
-        stepper.setSpeed(slider_speed);
-    }
-    else if ((digitalRead(back_end_switch) == 1 ) && (digitalRead(front_end_switch) == 1 )){
-        stepper.setSpeed(slider_speed);
-    }
-    else if (slider_speed == 0){
-        stepper.setSpeed(slider_speed);
-    }
-
-    servos.spinOnce();
-    stepper.runSpeed();
+    nh.spinOnce();
     delay(1);
     
 }

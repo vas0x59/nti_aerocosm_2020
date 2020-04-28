@@ -1,8 +1,9 @@
+Vanya Baranov, [28.04.20 18:52]
 #include <Arduino.h>
 #include <Servo.h>
 #include <ros.h>
 #include <std_msgs/Int32.h>
-#include <std_msgs/Float32.h>
+#include <std_msgs/Int16.h>
 #include <std_msgs/Int16MultiArray.h>
 
 int max_servo1 = 100;
@@ -10,6 +11,7 @@ int min_servo1 = 10;
 
 int max_servo2 = 100;
 int min_servo2 = 10;
+int x;
 
 //___________________________dvig Open_____________
 #define Sila 9
@@ -83,11 +85,13 @@ void motorline(const std_msgs::Int32 &cmd_msg)
   {
   stepper.setSpeed(13);
   stepper.step(cmd_msg.data);
+  x=0;
   }
   if ((digitalRead(back_end_switch) == 1) and (cmd_msg.data > 0))
   {
   stepper.setSpeed(13);
   stepper.step(cmd_msg.data);
+  x=0;
   }
     if ((digitalRead(front_end_switch) == 0) and (cmd_msg.data > 0)) 
   {
@@ -113,7 +117,7 @@ void rfid(const std_msgs::Int16MultiArray &cmd_msg){
         // delay(1);
     }
     echo_m.data = cmd_msg.data[2];
-    echo_pub.publish(echo_m);
+    echo_pub.publish(&echo_m);
 }
 ros::Subscriber<std_msgs::Int16MultiArray> subs5("/arduino/rfid_bytes", &rfid);    // steper %
 // ros::Publisher range_ping1_pub("arduino/range_ping1", &echo_m);
@@ -157,6 +161,9 @@ delay(600);
   pinMode(back_end_switch, INPUT_PULLUP);
   Serial1.begin(115200);
 
+Vanya Baranov, [28.04.20 18:52]
+
+
   nh.subscribe(subs1);
   nh.subscribe(subs2);
   nh.subscribe(subs3);
@@ -167,7 +174,7 @@ delay(600);
 void loop() {
   
   nh.spinOnce();
-  if (((digitalRead(back_end_switch) == 0) or (digitalRead(front_end_switch) == 0)) and (x == 1)) {
+  if (((digitalRead(back_end_switch) == 0) or (digitalRead(front_end_switch) == 0)) and (x == 0)) {
     x = 1;
     stepper.step(0);
 

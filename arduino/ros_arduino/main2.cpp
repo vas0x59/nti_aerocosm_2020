@@ -3,7 +3,6 @@
 #include <ros.h>
 #include <std_msgs/Int32.h>
 #include <std_msgs/Float32.h>
-#include <std_msgs/Int16MultiArray.h>
 
 int max_servo1 = 100;
 int min_servo1 = 10;
@@ -102,49 +101,33 @@ void motorline(const std_msgs::Int32 &cmd_msg)
   
   
 }
-std_msgs::Int16 echo_m;
-ros::Publisher echo_pub("arduino/echo", &echo_m);
-void rfid(const std_msgs::Int16MultiArray &cmd_msg){
-    for (int i = 0; i < 16; i++)
-    {
-        byte cb = cmd_msg.data[i];
-        
-        Serial3.write(cb);
-        // delay(1);
-    }
-    echo_m.data = cmd_msg.data[2];
-    echo_pub.publish(echo_m);
-}
-ros::Subscriber<std_msgs::Int16MultiArray> subs5("/arduino/rfid_bytes", &rfid);    // steper %
-// ros::Publisher range_ping1_pub("arduino/range_ping1", &echo_m);
 
 ros::Subscriber<std_msgs::Int32> subs1("/arduino/servo1", &s1);             //servo big
 ros::Subscriber<std_msgs::Int32> subs2("/arduino/servo2", &s2);             // sevo small
 ros::Subscriber<std_msgs::Int32> subs3("/arduino/motor1", &motorRotation1); // moto open
 ros::Subscriber<std_msgs::Int32> subs4("/arduino/slider", &motorline);    // steper %
 
-
 void setup()
 {
   Serial3.begin(9600);
   digitalWrite(HC12SetPin, LOW);
-  delay(600);
+  delay(500);
   //HC-12
 
- Serial3.println("AT");
- delay(1);
-Serial3.println("AT+V");
-delay(1);
-Serial3.println("AT+DEFAULT");
-delay(1);
-Serial3.println("AT+P8");
-delay(1);
-Serial3.println("AT+C040");
-delay(1);
-Serial3.println("AT+B9600");
-delay(600);
+  Serial3.println("AT");
+  delay(50);
+  Serial3.println("AT+V");
+  delay(50);
+  Serial3.println("AT+DEFAULT");
+  delay(50);
+  Serial3.println("AT+P8");
+  delay(50);
+  Serial3.println("AT+C005");
+  // delay(10);
+  delay(500);
   digitalWrite(HC12SetPin, HIGH);
   delay(10);
+
 
   pinMode(Sila, OUTPUT);
   pinMode(Naprav, OUTPUT);
@@ -161,17 +144,16 @@ delay(600);
   nh.subscribe(subs2);
   nh.subscribe(subs3);
   nh.subscribe(subs4);
-  nh.subscribe(subs5);
-    nh.advertise(echo_pub);
+
+
+
+
 }
+
 void loop() {
   
   nh.spinOnce();
-  if (((digitalRead(back_end_switch) == 0) or (digitalRead(front_end_switch) == 0)) and (x == 1)) {
-    x = 1;
-    stepper.step(0);
 
-  }
   delay(1);
 
 }
