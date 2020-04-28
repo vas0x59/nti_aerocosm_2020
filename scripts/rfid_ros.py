@@ -26,7 +26,7 @@ from MFRC522_python_nogit import MFRC522
 import signal
 import rospy 
 from std_msgs.msg import String
-rospy.init_node()
+rospy.init_node("rfid")
 publs = rospy.Publisher("/rfid_str", String, queue_size=10)
 continue_reading = True
 
