@@ -81,7 +81,7 @@ for event in device.read_loop():
         # rospy.sleep(2)
         # print("A")
         tw.linear.x = forward_val*SPEED
-        tw.angular.z = right_val*SPEED_A
+        tw.angular.z = -right_val*SPEED_A
         cmd_vel.publish(tw)
         servo1.publish(int((-r1_val+1) * 90))
         servo2.publish(int((r2_val+1) * 90))
