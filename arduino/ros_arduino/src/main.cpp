@@ -127,7 +127,10 @@ void loop()
     if ((digitalRead(back_end_switch) == 0 ) && (slider_speed > 0)){
         stepper.setSpeed(slider_speed);
     }
-    if ((digitalRead(front_end_switch) == 0 ) && (slider_speed < 0)){
+    else if ((digitalRead(front_end_switch) == 0 ) && (slider_speed < 0)){
+        stepper.setSpeed(slider_speed);
+    }
+    else if ((digitalRead(back_end_switch) == 1 ) && (digitalRead(front_end_switch) == 1 )){
         stepper.setSpeed(slider_speed);
     }
 
