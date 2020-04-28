@@ -3,7 +3,7 @@ import evdev
 import rospy
 
 from nav_msgs.msg import Odometry
-from std_msgs.msg import Float32, Int16, Bool
+from std_msgs.msg import Float32, Int16, Int32
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3, TransformStamped
 
 
@@ -11,6 +11,11 @@ from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3, Transform
 
 rospy.init_node("JOY")
 cmd_vel = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+
+servo1 = rospy.Publisher("/arduino/servo1", Int32, queue_size=10)
+servo2 = rospy.Publisher("/arduino/servo2", Int32, queue_size=10)
+slider = rospy.Publisher("/arduino/slider", Int32, queue_size=10)
+motor = rospy.Publisher("/arduino/motor1", Int32, queue_size=10)
 
 
 devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
@@ -24,6 +29,7 @@ device = evdev.InputDevice(dddd)
 
 forward_val = 0
 right_val = 0
+thru_val = 0
 
 SPEED = 0.2
 SPEED_A = 0.5
@@ -42,6 +48,8 @@ for event in device.read_loop():
             forward_val = event.value/90.5
         elif event.code == evdev.ecodes.ABS_X:
             right_val = event.value/90.5
+        elif event.code == evdev.ecodes.ABS_Z:
+            thru_val = event.value/90.5
         print("f", forward_val, "r", right_val)
         tw = Twist()
         # rospy.sleep(2)
@@ -49,7 +57,7 @@ for event in device.read_loop():
         tw.linear.x = forward_val*SPEED
         tw.angular.z = right_val*SPEED_A
         cmd_vel.publish(tw)
-        
+        servo1.publish((thru_val+1) * 90)
         # if  == evdev.ecodes.ABS_Y:
         #     print("dd")
         #     print()
