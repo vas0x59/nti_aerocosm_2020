@@ -1,4 +1,3 @@
-Vanya Baranov, [28.04.20 18:52]
 #include <Arduino.h>
 #include <Servo.h>
 #include <ros.h>
@@ -78,6 +77,12 @@ void motorRotation1(const std_msgs::Int32 &cmd_msg)
 
 int slider_speed = 0;
 int slider_maxspeed = 50;
+std_msgs::Int16 echo_m;
+std_msgs::Int16 echo1_m;
+std_msgs::Int16 echo2_m;
+ros::Publisher echo_pub("arduino/echo", &echo_m);
+ros::Publisher echo1_pub("arduino/echo1", &echo1_m);
+ros::Publisher echo2_pub("arduino/echo2", &echo2_m);
 
 void motorline(const std_msgs::Int32 &cmd_msg)
 {
@@ -106,8 +111,7 @@ void motorline(const std_msgs::Int32 &cmd_msg)
   
   
 }
-std_msgs::Int16 echo_m;
-ros::Publisher echo_pub("arduino/echo", &echo_m);
+
 void rfid(const std_msgs::Int16MultiArray &cmd_msg){
     for (int i = 0; i < 16; i++)
     {
@@ -161,7 +165,6 @@ delay(600);
   pinMode(back_end_switch, INPUT_PULLUP);
   Serial1.begin(115200);
 
-Vanya Baranov, [28.04.20 18:52]
 
 
   nh.subscribe(subs1);
@@ -170,10 +173,14 @@ Vanya Baranov, [28.04.20 18:52]
   nh.subscribe(subs4);
   nh.subscribe(subs5);
     nh.advertise(echo_pub);
+    nh.advertise(echo1_pub);
+    nh.advertise(echo2_pub);
 }
 void loop() {
   
   nh.spinOnce();
+  echo1_m.publish(digitalRead(front_end_switch));
+  echo2_m.publish(digitalRead(back_end_switch));
   if (((digitalRead(back_end_switch) == 0) or (digitalRead(front_end_switch) == 0)) and (x == 0)) {
     x = 1;
     stepper.step(0);
