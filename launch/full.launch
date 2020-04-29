@@ -3,7 +3,7 @@
     <!-- <include file="$(find nti_aerocosm_2020)/launch/uvc_camera2.launch" /> -->
     <!-- <include file="$(find autonet_r1)/launch/camera1.launch" /> -->
     <include file="$(find turtlebro_navigation)/launch/turtlebro_slam_navigation.launch" />
-    
+
     <arg name="arduino_device" default="/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0010-if00-port0"/>
     <arg name="arduino_baud" default="115200"/>
 
@@ -16,7 +16,7 @@
 
     </node> -->
 
-    <node pkg="rosserial_python" type="serial_node.py" name="arduino_serial_node" output="log" respawn="true" respawn_delay="10">
+    <node pkg="rosserial_python" type="serial_node.py" name="arduino_serial_node" output="log" respawn="false" respawn_delay="10">
         <param name="port" value="$(arg arduino_device)"/>
         <param name="baud" value="$(arg arduino_baud)"/>
     </node>
