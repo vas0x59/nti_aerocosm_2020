@@ -1,0 +1,10 @@
+<launch>
+    <arg name="device" default="/dev/video2" />
+    <node name="back_camera" pkg="cv_camera" type="cv_camera_node" output="screen">
+        <remap from="image_raw/compressed" to="back_camera/compressed" />
+        <param name="device_id" value="$(arg device)" />
+        <param name="image_width" value="320" />
+        <param name="image_height" value="240" />
+        <param name="rate" value="18" />
+    </node>
+</launch>
