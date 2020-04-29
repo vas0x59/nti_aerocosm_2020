@@ -3,5 +3,8 @@
         "/home/vasily/Projects/aerocosm_ws/devel/lib/python3.8/site-packages",
         "/opt/ros/melodic/lib/python3.8/site-packages"
     ],
-    "python.pythonPath": "/sbin/python3.8"
+    "python.pythonPath": "/sbin/python3.8",
+    "files.associations": {
+        "cstddef": "cpp"
+    }
 }

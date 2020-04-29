@@ -1,3 +1,4 @@
+Vanya Baranov, [28.04.20 20:59]
 #include <Arduino.h>
 #include <Servo.h>
 #include <ros.h>
@@ -86,43 +87,57 @@ ros::Publisher echo2_pub("arduino/echo2", &echo2_m);
 
 void motorline(const std_msgs::Int32 &cmd_msg)
 {
-  if ((digitalRead(front_end_switch) == 1) and (cmd_msg.data < 0)) 
+  if ((digitalRead(front_end_switch) == 0) and (cmd_msg.data < 0))
   {
-  stepper.setSpeed(13);
-  stepper.step(cmd_msg.data);
-  x=0;
+    stepper.setSpeed(13);
+    stepper.step(0);
   }
-  if ((digitalRead(back_end_switch) == 1) and (cmd_msg.data > 0))
+  else if ((digitalRead(back_end_switch) == 0) and (cmd_msg.data > 0))
   {
-  stepper.setSpeed(13);
-  stepper.step(cmd_msg.data);
-  x=0;
+    stepper.setSpeed(13);
+    stepper.step(0);
   }
-    if ((digitalRead(front_end_switch) == 0) and (cmd_msg.data > 0)) 
+
+  if ((digitalRead(front_end_switch) == 1) and (cmd_msg.data < 0))
   {
-  stepper.setSpeed(13);
-  stepper.step(0);
+    stepper.setSpeed(13);
+    stepper.step(cmd_msg.data);
+    x = 0;
   }
-  if ((digitalRead(back_end_switch) == 0) and (cmd_msg.data < 0))
+  else if ((digitalRead(back_end_switch) == 1) and (cmd_msg.data > 0))
   {
-  stepper.setSpeed(13);
-  stepper.step(0);
+    stepper.setSpeed(13);
+    stepper.step(cmd_msg.data);
+    x = 0;
   }
-  
-  
 }
 
-void rfid(const std_msgs::Int16MultiArray &cmd_msg){
-    for (int i = 0; i < 16; i++)
-    {
-        byte cb = cmd_msg.data[i];
-        
-        Serial3.write(cb);
-        // delay(1);
-    }
-    echo_m.data = cmd_msg.data[2];
-    echo_pub.publish(&echo_m);
+/// rfid(const std_msgs::Int16MultiArray &cmd_msg){
+////   for (int i = 0; i < 16; i++)
+// {
+//   byte cb = cmd_msg.data[i];
+
+//  Serial3.write(cb);
+// delay(1);
+//}
+// echo_m.data = cmd_msg.data[2];
+//  echo_pub.publish(&echo_m);
+//}
+
+byte key[16] = {0xAA, 0xFA, 0x03, 0x14, 0x01, 0x03, 0x75, 0xCA, 0xAA, 0xFA, 0x03, 0x14, 0x01, 0x03, 0x75, 0xCA};
+void rfid(const std_msgs::Int16MultiArray &cmd_msg) {
+  for (int i = 0; i < 16; i++)
+  {
+    byte cb = cmd_msg.data[i];
+
+    Serial3.write(cb);
+    // delay(1);
+  }
+  byte cb = cmd_msg.data[1];
+  echo_m.data = cb;
+  echo_pub.publish(&echo_m);
 }
+
 ros::Subscriber<std_msgs::Int16MultiArray> subs5("/arduino/rfid_bytes", &rfid);    // steper %
 // ros::Publisher range_ping1_pub("arduino/range_ping1", &echo_m);
 
@@ -134,25 +149,28 @@ ros::Subscriber<std_msgs::Int32> subs4("/arduino/slider", &motorline);    // ste
 
 void setup()
 {
+  pinMode(HC12SetPin, OUTPUT);
   Serial3.begin(9600);
   digitalWrite(HC12SetPin, LOW);
-  delay(600);
+  delay(500);
   //HC-12
 
- Serial3.println("AT");
- delay(1);
-Serial3.println("AT+V");
-delay(1);
-Serial3.println("AT+DEFAULT");
-delay(1);
-Serial3.println("AT+P8");
-delay(1);
-Serial3.println("AT+C040");
-delay(1);
-Serial3.println("AT+B9600");
-delay(600);
+  Serial3.println("AT");
+  delay(1);
+  Serial3.println("AT+V");
+  delay(1);
+  Serial3.println("AT+DEFAULT");
+  delay(1);
+  Serial3.println("AT+P8");
+  delay(1);
+  //Serial3.println("AT+C040");
+  Serial3.println("AT+C056");
+  delay(1);
+  Serial3.println("AT+B9600");
+  delay(500);
   digitalWrite(HC12SetPin, HIGH);
   delay(10);
+
 
   pinMode(Sila, OUTPUT);
   pinMode(Naprav, OUTPUT);
@@ -172,22 +190,26 @@ delay(600);
   nh.subscribe(subs3);
   nh.subscribe(subs4);
   nh.subscribe(subs5);
-    nh.advertise(echo_pub);
-    nh.advertise(echo1_pub);
-    nh.advertise(echo2_pub);
+  nh.advertise(echo_pub);
+  nh.advertise(echo1_pub);
+  nh.advertise(echo2_pub);
 }
 void loop() {
-  
+
   nh.spinOnce();
   echo1_m.data = digitalRead(front_end_switch);
   echo2_m.data = digitalRead(back_end_switch);
   echo1_pub.publish(&echo1_m);
   echo2_pub.publish(&echo2_m);
-  if (((digitalRead(back_end_switch) == 0) or (digitalRead(front_end_switch) == 0)) and (x == 0)) {
-    x = 1;
-    stepper.step(0);
 
-  }
   delay(1);
+//   for (int i = 0; i < 16; i++)
+//   {
+//     // byte cb = cmd_msg.data[i];
+
+//     Serial3.write(key[i]);
+//     // delay(1);
+//   }
+
 
 }

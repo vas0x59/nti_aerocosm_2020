@@ -157,3 +157,37 @@ void loop() {
   delay(1);
 
 }
+
+
+
+
+
+
+
+
+
+
+
+  if ((digitalRead(front_end_switch) == 0) and (cmd_msg.data > 0)) 
+  {
+  stepper.setSpeed(13);
+  stepper.step(0);
+  }
+  else if ((digitalRead(back_end_switch) == 0) and (cmd_msg.data < 0))
+  {
+  stepper.setSpeed(13);
+  stepper.step(0);
+  }
+  else if ((digitalRead(front_end_switch) == 1) and (cmd_msg.data < 0)) 
+  {
+  stepper.setSpeed(13);
+  stepper.step(cmd_msg.data);
+  x=0;
+  }
+  else if ((digitalRead(back_end_switch) == 1) and (cmd_msg.data > 0))
+  {
+  stepper.setSpeed(13);
+  stepper.step(cmd_msg.data);
+  x=0;
+  }
+  

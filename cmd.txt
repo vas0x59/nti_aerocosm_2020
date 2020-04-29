@@ -11,11 +11,15 @@ angular:
   x: 0.0
   y: 0.0
   z: 0.0" 
-
+python joy.py
 
 Raspberry
 
 roslaunch turtlebro uvc_camera2.launch 
 roslaunch turtlebro uvc_camera.launch 
 
+roslaunch nti_aerocosm_2020 cams.launch
+rosrun rosserial_python serial_node.py _port:=/dev/ttyUSB1 _baud:=115200
 
+htop
+python rfid_ros.py

@@ -1,0 +1,30 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="model" default="$(env ROVER_MODEL)" doc="model type [turtlebro, brover]"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="use_sim_time" default="false"/>
+
+
+  <arg name="map_file" default="$(find nti_aerocosm_2020)/maps/map_test/map_test.yaml"/>
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
+    <param name="delta" value="0.05"/>
+  </node>
+
+  <group if="$(arg use_sim_time)">
+    <param name="/use_sim_time" value="true" />
+  </group>
+
+  <!-- gmapping server -->
+  <include file="$(find turtlebro_navigation)/launch/gmapping.launch"/>
+
+  <!-- move_base -->
+  <include file="$(find turtlebro_navigation)/launch/move_base.launch">
+    <arg name="model" value="$(arg model)" />
+  </include>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find turtlebro_navigation)/rviz/turtlebro_navigation.rviz"/>
+  </group>
+</launch>
