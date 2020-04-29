@@ -85,7 +85,7 @@ for event in device.read_loop():
         cmd_vel.publish(tw)
     servo1.publish(int((-r1_val+1) * 90))
     servo2.publish(int((r2_val+1) * 90))
-    slider.publish(int(yaw_val*10))
+    slider.publish(int(yaw_val*18))
     print(revers_btn*motor_speed)
     motor.publish(revers_btn*motor_speed)
         # if  == evdev.ecodes.ABS_Y:

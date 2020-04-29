@@ -1,7 +1,7 @@
 <launch>
   <!-- Arguments -->
   <arg name="model" default="$(env ROVER_MODEL)" doc="model type [turtlebro, brover]"/>
-  <arg name="map_file" default="$(find turtlebro_navigation)/maps/map.yaml"/>
+  <arg name="map_file" default="$(find nti_aerocosm_2020)/maps/map_test/map_test.yaml"/>
   <arg name="open_rviz" default="true"/>
 
   <!-- Map server -->
