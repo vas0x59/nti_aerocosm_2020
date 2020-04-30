@@ -23,3 +23,7 @@ rosrun rosserial_python serial_node.py _port:=/dev/ttyUSB1 _baud:=115200
 
 htop
 python rfid_ros.py
+roslaunch nti_aerocosm_2020 full.launch
+
+export ROS_HOSTNAME=vas0x59-G5
+export ROS_MASTER_URI=http://10.0.0.59:11311
