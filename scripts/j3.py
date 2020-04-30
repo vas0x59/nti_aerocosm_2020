@@ -70,12 +70,12 @@ for event in device.read_loop():
             thru_val = event.value/90.5
         elif event.code == evdev.ecodes.ABS_RX:
             yaw_val  = event.value/90.5
-        elif event.code == evdev.ecodes.ABS_RX:
-            yaw_val  = event.value/90.5
         elif event.code == evdev.ecodes.ABS_RY:
             r1_val  = event.value/90.5
         elif event.code == evdev.ecodes.ABS_RZ:
             r2_val  = event.value/90.5
+        if abs(yaw_val) < 0.25:
+            yaw_val = 0
         print("f", forward_val, "r", right_val, "T", thru_val, "y", yaw_val, "1", r1_val, "2", r2_val)
         tw = Twist()
         # rospy.sleep(2)
